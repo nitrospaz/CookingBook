@@ -1,4 +1,4 @@
-namespace CookingBook;
+namespace CookingBook.Views;
 
 public partial class NotePage : ContentPage
 {
