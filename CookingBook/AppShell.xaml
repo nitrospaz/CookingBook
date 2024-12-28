@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:CookingBook.Pages">
 
+    
     <!-- This is for the header for the flyout -->
     <Shell.FlyoutHeader Title="Cooking Book">
         <Grid HeightRequest="100" BackgroundColor="DarkSlateBlue">
@@ -23,7 +24,12 @@
         <!-- These ShellContent are tabs on that bar -->
         <ShellContent
             Title="All Notes"
+            Route="AllNotesPage" 
             ContentTemplate="{DataTemplate local:AllNotesPage}"
+            Icon="{OnPlatform 'icon_notes.png', iOS='icon_notes_ios.png', MacCatalyst='icon_notes_ios.png'}" />
+        <ShellContent
+            Title="New Note"
+            ContentTemplate="{DataTemplate local:NotePage}"
             Icon="{OnPlatform 'icon_notes.png', iOS='icon_notes_ios.png', MacCatalyst='icon_notes_ios.png'}" />
     </FlyoutItem>
 
