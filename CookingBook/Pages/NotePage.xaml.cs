@@ -55,6 +55,13 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
         RefreshProperties();
     }
 
+    public void ClearPage()
+    {
+        // Clear the page
+        _note = new Models.Note();
+        RefreshProperties();
+    }
+
     private void RefreshProperties()
     {
         OnPropertyChanged(nameof(Text));
@@ -63,15 +70,33 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
 
     private async Task Save()
     {
+        if (string.IsNullOrWhiteSpace(_note.Text))
+        {
+            await DisplayAlert("Error", "Note text cannot be empty.", "OK");
+            return;
+        }
+
         _note.Date = DateTime.Now;
         _note.Save();
         await Shell.Current.GoToAsync($"..?saved={_note.Filename}");
+
+        // Clear the page
+        ClearPage();
+
+        // Navigate to AllNotesPage
+        await Shell.Current.GoToAsync("//AllNotesPage");
     }
 
     private async Task Delete()
     {
         _note.Delete();
         await Shell.Current.GoToAsync($"..?deleted={_note.Filename}");
+
+        // Clear the page
+        ClearPage();
+
+        // Navigate to AllNotesPage
+        await Shell.Current.GoToAsync("//AllNotesPage");
     }
 
     protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
