@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CookingBook.Pages.AboutPage"
+             Title="About CookingBook">
+    <VerticalStackLayout Spacing="10" Margin="10">
+        <HorizontalStackLayout Spacing="10">
+            <Image Source="dotnet_bot.png"
+               SemanticProperties.Description="The dot net bot waving hello!"
+               HeightRequest="64" />
+            <Label x:Name="TitleLabel" FontSize="22" FontAttributes="Bold" VerticalOptions="End" />
+            <Label x:Name="VersionLabel" FontSize="22" VerticalOptions="End" />
+        </HorizontalStackLayout>
+
+        <Label x:Name="MessageLabel" />
+        <Button Text="Learn more..." Clicked="OnLearnMoreClicked" />
+    </VerticalStackLayout>
+</ContentPage>

@@ -3,19 +3,37 @@
     x:Class="CookingBook.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:views="clr-namespace:CookingBook.Views"
-    Shell.FlyoutBehavior="Disabled">
+    xmlns:local="clr-namespace:CookingBook.Pages">
 
-    <TabBar>
+    
+    <!-- This is for the header for the flyout -->
+    <Shell.FlyoutHeader Title="Cooking Book">
+        <Grid HeightRequest="100" BackgroundColor="DarkSlateBlue">
+            <Image Source="moon.png"/>
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <!-- FlyoutItem is a link in the flyout -->
+    <!-- flyout menu is Opened by clicking on the very hamburger 
+        on the top left move bar on windows -->
+    <!-- On mobile hamburger is to the left of the page title -->
+
+    <FlyoutItem Title="All Notes">
+        <!-- This is a bar across the bottom of the page on mobile -->
+        <!-- On windows there is a bar across the top under the page title -->
+        <!-- These ShellContent are tabs on that bar -->
         <ShellContent
-            Title="Notes"
-            ContentTemplate="{DataTemplate views:AllNotesPage}"
+            Title="All Notes"
+            Route="AllNotesPage" 
+            ContentTemplate="{DataTemplate local:AllNotesPage}"
             Icon="{OnPlatform 'icon_notes.png', iOS='icon_notes_ios.png', MacCatalyst='icon_notes_ios.png'}" />
-
         <ShellContent
-            Title="About"
-            ContentTemplate="{DataTemplate views:AboutPage}"
-            Icon="{OnPlatform 'icon_about.png', iOS='icon_about_ios.png', MacCatalyst='icon_about_ios.png'}" />
-    </TabBar>
+            Title="New Note"
+            ContentTemplate="{DataTemplate local:NotePage}"
+            Icon="{OnPlatform 'icon_notes.png', iOS='icon_notes_ios.png', MacCatalyst='icon_notes_ios.png'}" />
+    </FlyoutItem>
 
+    <FlyoutItem Title="About" Icon="question.png">
+        <ShellContent ContentTemplate="{DataTemplate local:AboutPage}"/>
+    </FlyoutItem>
 </Shell>
