@@ -11,7 +11,10 @@
             // needs to be registered with the navigation system.
             // The AllNotesPage and AboutPage pages are automatically registered
             // with the navigation system by being declared in the TabBar.
-            Routing.RegisterRoute(nameof(Pages.NotePage), typeof(Pages.NotePage));
+
+            //Routing.RegisterRoute(nameof(Pages.NotePage), typeof(Pages.NotePage));
+            //Routing.RegisterRoute(nameof(Pages.AllNotesPage), typeof(Pages.AllNotesPage));
+
         }
     }
 }

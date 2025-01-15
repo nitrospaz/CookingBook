@@ -11,8 +11,8 @@ namespace CookingBook.Utilities
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var text = value as string;
-            return string.IsNullOrEmpty(text) ? "New Note" : "Edit Note";
+            var title = value as string;
+            return string.IsNullOrEmpty(title) ? "New Recipe" : "Edit Recepie";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
