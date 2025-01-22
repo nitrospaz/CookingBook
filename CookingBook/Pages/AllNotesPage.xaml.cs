@@ -41,7 +41,8 @@ public partial class AllNotesPage : ContentPage
             //await Navigation.PushAsync(new NotePage(selectedNote));
 
             // Navigate to NotePage with the selected note's filename as a query parameter
-            await Shell.Current.GoToAsync($"//NotePage?load={selectedNote.Filename}");
+            // load in current frame
+            await Shell.Current.GoToAsync($"NotePage?load={selectedNote.Filename}");
         }
 
         // Deselect the item
@@ -51,6 +52,6 @@ public partial class AllNotesPage : ContentPage
     private async void OnAddNewRecipe()
     {
         // Navigate to a new page for adding a recipe
-        await Shell.Current.GoToAsync("//NotePage");
+        await Shell.Current.GoToAsync("NotePage?new=true");
     }
 }

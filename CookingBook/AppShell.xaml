@@ -3,7 +3,8 @@
     x:Class="CookingBook.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:CookingBook.Pages">
+    xmlns:local="clr-namespace:CookingBook.Pages"
+    Navigating="OnShellNavigating">
 
     
     <!-- This is for the header for the flyout -->
@@ -23,15 +24,12 @@
         <!-- On windows there is a bar across the top under the page title -->
         <!-- These ShellContent are tabs on that bar -->
         <ShellContent
+            x:Name="AllRecipesShellContent"
             Title="All Recipes"
             Route="AllNotesPage" 
             ContentTemplate="{DataTemplate local:AllNotesPage}"
             Icon="{OnPlatform 'icon_notes.png', iOS='icon_notes_ios.png', MacCatalyst='icon_notes_ios.png'}" />
-        <ShellContent
-            Title="Edit Recipe"
-            Route="NotePage"
-            ContentTemplate="{DataTemplate local:NotePage}"
-            Icon="{OnPlatform 'icon_notes.png', iOS='icon_notes_ios.png', MacCatalyst='icon_notes_ios.png'}" />
+        
     </FlyoutItem>
     <FlyoutItem Title="About" Icon="question.png">
         <ShellContent ContentTemplate="{DataTemplate local:AboutPage}"/>

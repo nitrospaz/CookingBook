@@ -97,7 +97,19 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (query.ContainsKey("load"))
+        if (query.ContainsKey("new") && bool.TryParse(query["new"].ToString(), out bool isNew) && isNew)
+        {
+            if(_hasUnsavedChanges)
+            {
+                // do nothing.
+                return;
+            }
+            else
+            {
+                _note = new Models.Note();
+            }
+        }
+        else if (query.ContainsKey("load"))
         {
             _note = Models.Note.Load(query["load"].ToString());
         }
@@ -150,8 +162,11 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
 
         // Navigate to AllNotesPage
         // if not using the ".." syntax, the page will be pushed onto the navigation stack
-        // if using the shell content URI syntax, you need to use // before the URI
-        // if using the registered route name, just use the uri
+        //  ".." syntax is for routes without UI like saving a note
+        // if calling routes that have been defined for a floyout item in appshell.xaml,
+        //  you need to use // before the URI
+        // if calling routes defined in appshell.xaml.cs, NOT a flyout item, 
+        //  just use the uri with no slashes. This also gives you the back arrow at the top.
         await Shell.Current.GoToAsync("//AllNotesPage");
         _isSaving = false;
     }
@@ -176,6 +191,18 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
 
     private async void OnShellNavigating(object sender, ShellNavigatingEventArgs e)
     {
+        // Check if the target page is NotePage and if it is a new note being created
+        if (e.Target.Location.OriginalString.Contains("NotePage") && e.Target.Location.OriginalString.Contains("new=true"))
+        {
+            return;
+        }
+
+        // Check if the target page is NotePage and if it is a new note being created
+        if (e.Target.Location.OriginalString.Contains("NotePage") && e.Target.Location.OriginalString.Contains("load="))
+        {
+            return;
+        }
+
         if (_hasUnsavedChanges && !_isSaving)
         {
             e.Cancel(); // Cancel the navigation
