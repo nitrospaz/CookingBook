@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CookingBook.Pages.AllNotesPage"
-             Title="All Notes">
+             Title="All Recipes">
     <!-- Add an item to the toolbar -->
     <!-- <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding NewCommand}" IconImageSource="{FontImage Glyph='+', Color=Black, Size=22}" />
@@ -10,6 +10,10 @@
     
     <ScrollView>
         <StackLayout>
+            <!-- Add Button for adding a new recipe -->
+            <Button Text="Add New Recipe" 
+                 Command="{Binding AddNewRecipeCommand}" 
+                 Margin="20" />
             <CollectionView 
                 x:Name="NotesCollectionView" 
                 ItemsSource="{Binding AllNotes}"
@@ -27,9 +31,8 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout>
-                            <Label Text="{Binding Text}" FontSize="22"/>
-                            <Label Text="{Binding Date}" FontSize="14" TextColor="Silver"/>
-                            <Label Text="{Binding Filename}" />
+                            <Label Text="{Binding Title}" FontSize="22"/>
+                            <Label Text="{Binding DateModified}" FontSize="14" TextColor="Silver"/>
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

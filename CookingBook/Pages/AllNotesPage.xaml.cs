@@ -8,11 +8,13 @@ namespace CookingBook.Pages;
 public partial class AllNotesPage : ContentPage
 {
     public ObservableCollection<Note> AllNotes { get; private set; }
+    public ICommand AddNewRecipeCommand { get; private set; }
 
     public AllNotesPage()
     {
         InitializeComponent();
         AllNotes = new ObservableCollection<Note>(Note.LoadAll());
+        AddNewRecipeCommand = new RelayCommand(OnAddNewRecipe);
         BindingContext = this; // Set the BindingContext after initializing the collection
     }
 
@@ -39,10 +41,17 @@ public partial class AllNotesPage : ContentPage
             //await Navigation.PushAsync(new NotePage(selectedNote));
 
             // Navigate to NotePage with the selected note's filename as a query parameter
+            // load in current frame
             await Shell.Current.GoToAsync($"NotePage?load={selectedNote.Filename}");
         }
 
         // Deselect the item
         ((CollectionView)sender).SelectedItem = null;
+    }
+
+    private async void OnAddNewRecipe()
+    {
+        // Navigate to a new page for adding a recipe
+        await Shell.Current.GoToAsync("NotePage?new=true");
     }
 }

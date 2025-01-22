@@ -28,6 +28,7 @@ namespace CookingBook.WinUI
         {
             base.OnLaunched(args);
 
+            // set custom initial window size when launched on Windows
             const int width = 800;
             const int height = 600;
 
@@ -38,5 +39,4 @@ namespace CookingBook.WinUI
             appWindow.Resize(new SizeInt32(width, height));
         }
     }
-
 }

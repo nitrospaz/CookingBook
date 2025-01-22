@@ -6,26 +6,78 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <utes:NoteTitleConverter x:Key="NoteTitleConverter" />
+            <Style x:Key="SaveButtonStyle" TargetType="Button">
+                <!-- Blue -->
+                <Setter Property="BackgroundColor" Value="#0072B2" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="CornerRadius" Value="10" />
+                <Setter Property="Padding" Value="10" />
+            </Style>
+            <Style x:Key="DeleteButtonStyle" TargetType="Button">
+                <!-- Yellow -->
+                <Setter Property="BackgroundColor" Value="#F0E442" />
+                <Setter Property="TextColor" Value="Black" />
+                <Setter Property="CornerRadius" Value="10" />
+                <Setter Property="Padding" Value="10" />
+            </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
     <ContentPage.Title>
-        <Binding Path="Text" Converter="{StaticResource NoteTitleConverter}" />
+        <Binding Path="Title" Converter="{StaticResource NoteTitleConverter}" />
     </ContentPage.Title>
     
-    <VerticalStackLayout Spacing="10" Margin="5">
-        <Editor x:Name="TextEditor"
-                Placeholder="Enter your note"
-                Text="{Binding Text}"
-                HeightRequest="100" />
+    <Grid RowDefinitions="*, Auto">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="10" Margin="5">
+                <Label Text="Title" HorizontalOptions="Start" />
+                <Editor x:Name="TitleEditor"
+                    Placeholder="Enter Your Title Here"
+                    Text="{Binding Title}"
+                    WidthRequest="300"
+                    HeightRequest="40"
+                    HorizontalOptions="Start" />
 
-        <Grid ColumnDefinitions="*,*" ColumnSpacing="4">
+                <Label Text="Description" HorizontalOptions="Start" />
+                <Editor x:Name="DescriptionEditor"
+                    Placeholder="Enter Description"
+                    Text="{Binding Description}"
+                        HeightRequest="150"/>
+
+                <Label Text="Ingredients" HorizontalOptions="Start" />
+                <Editor x:Name="IngredientsEditor"
+                    Placeholder="Enter Ingredients"
+                    Text="{Binding Ingredients}"
+                    HeightRequest="150"/>
+
+                <Label Text="Instructions" HorizontalOptions="Start" />
+                <Editor x:Name="InstructionsEditor"
+                    Placeholder="Enter Instructions"
+                    Text="{Binding Instructions}"
+                    HeightRequest="200"/>
+
+                <Label Text="Note" HorizontalOptions="Start" />
+                <Editor x:Name="TextEditor"
+                    Placeholder="Enter your note"
+                    Text="{Binding Text}"
+                    HeightRequest="200"/>
+                <!--
+                    WidthRequest="500"
+                    HorizontalOptions="Start" 
+                -->
+            </VerticalStackLayout>
+        </ScrollView>
+        <HorizontalStackLayout Grid.Row="1" Spacing="10" Padding="5" HorizontalOptions="Center">
             <Button Text="Save"
-                    Command="{Binding SaveCommand}" />
+                WidthRequest="250"
+                Style="{StaticResource SaveButtonStyle}"
+                Command="{Binding SaveCommand}" />
 
-            <Button Grid.Column="1"
-                    Text="Delete"
-                    Command="{Binding DeleteCommand}" />
-        </Grid>
-    </VerticalStackLayout>
+            <Button Text="Delete"
+                WidthRequest="250"
+                Style="{StaticResource DeleteButtonStyle}"
+                Command="{Binding DeleteCommand}" />
+        </HorizontalStackLayout>
+    </Grid>
+    
 </ContentPage>
