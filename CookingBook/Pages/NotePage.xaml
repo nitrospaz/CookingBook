@@ -67,17 +67,60 @@
                 -->
             </VerticalStackLayout>
         </ScrollView>
-        <HorizontalStackLayout Grid.Row="1" Spacing="10" Padding="5" HorizontalOptions="Center">
-            <Button Text="Save"
-                WidthRequest="250"
-                Style="{StaticResource SaveButtonStyle}"
-                Command="{Binding SaveCommand}" />
+        <Grid Grid.Row="1" Padding="5" HorizontalOptions="Center">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="WidthStates">
+                    <VisualState x:Name="Narrow">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="0" />
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter TargetName="ButtonContainer" Property="Grid.RowDefinitions">
+                                <RowDefinitionCollection>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </RowDefinitionCollection>
+                            </Setter>
+                            <Setter TargetName="SaveButton" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="DeleteButton" Property="Grid.Row" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Wide">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="300" />
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter TargetName="ButtonContainer" Property="Grid.RowDefinitions">
+                                <RowDefinitionCollection>
+                                    <RowDefinition Height="Auto" />
+                                </RowDefinitionCollection>
+                            </Setter>
+                            <Setter TargetName="SaveButton" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="DeleteButton" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="SaveButton" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="DeleteButton" Property="Grid.Column" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <Grid x:Name="ButtonContainer" ColumnDefinitions="Auto, Auto" RowDefinitions="Auto">
+                <Button x:Name="SaveButton"
+                    Text="Save"
+                    Style="{StaticResource SaveButtonStyle}"
+                    Command="{Binding SaveCommand}" 
+                    HorizontalOptions="FillAndExpand"
+                    MinimumWidthRequest="100"
+                    Margin="2.5,2,2.5,2"/>
 
-            <Button Text="Delete"
-                WidthRequest="250"
-                Style="{StaticResource DeleteButtonStyle}"
-                Command="{Binding DeleteCommand}" />
-        </HorizontalStackLayout>
+                <Button x:Name="DeleteButton"
+                    Text="Delete"
+                    Style="{StaticResource DeleteButtonStyle}"
+                    Command="{Binding DeleteCommand}" 
+                    HorizontalOptions="FillAndExpand"
+                    MinimumWidthRequest="100"
+                    Margin="2.5,2,2.5,2"/> 
+            </Grid>
+        </Grid>
     </Grid>
     
 </ContentPage>
