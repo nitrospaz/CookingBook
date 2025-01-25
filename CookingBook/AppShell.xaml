@@ -22,7 +22,7 @@
     <FlyoutItem Title="Recipes">
         <!-- This is a bar across the bottom of the page on mobile -->
         <!-- On windows there is a bar across the top under the page title -->
-        <!-- These ShellContent are tabs on that bar -->
+        <!-- These ShellContent are tabs on that bar if there are more than 1 -->
         <ShellContent
             x:Name="AllRecipesShellContent"
             Title="All Recipes"

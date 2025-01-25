@@ -26,9 +26,74 @@
     <ContentPage.Title>
         <Binding Path="Title" Converter="{StaticResource NoteTitleConverter}" />
     </ContentPage.Title>
-    
-    <Grid RowDefinitions="*, Auto">
-        <ScrollView Grid.Row="0">
+
+    <Grid RowDefinitions="Auto, *">
+        <Grid x:Name="ButtonContainer" ColumnDefinitions="Auto, Auto, Auto" RowDefinitions="Auto" Padding="5" HorizontalOptions="Center">
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="WidthStates">
+                    <VisualState x:Name="Narrow">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="0" />
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter TargetName="ButtonContainer" Property="Grid.RowDefinitions">
+                                <RowDefinitionCollection>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </RowDefinitionCollection>
+                            </Setter>
+                            <Setter TargetName="ToggleButton" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="SaveButton" Property="Grid.Row" Value="1" />
+                            <Setter TargetName="DeleteButton" Property="Grid.Row" Value="2" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Wide">
+                        <VisualState.StateTriggers>
+                            <AdaptiveTrigger MinWindowWidth="300" />
+                        </VisualState.StateTriggers>
+                        <VisualState.Setters>
+                            <Setter TargetName="ButtonContainer" Property="Grid.RowDefinitions">
+                                <RowDefinitionCollection>
+                                    <RowDefinition Height="Auto" />
+                                </RowDefinitionCollection>
+                            </Setter>
+                            <Setter TargetName="ToggleButton" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="SaveButton" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="DeleteButton" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="ToggleButton" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="SaveButton" Property="Grid.Column" Value="1" />
+                            <Setter TargetName="DeleteButton" Property="Grid.Column" Value="2" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+
+            <Button x:Name="ToggleButton"
+                Text="Toggle Edit/Read"
+                Clicked="OnToggleEditMode"
+                HorizontalOptions="FillAndExpand"
+                MinimumWidthRequest="100"
+                Margin="2.5,2,2.5,2"/>
+
+            <Button x:Name="SaveButton"
+                Text="Save"
+                Style="{StaticResource SaveButtonStyle}"
+                Command="{Binding SaveCommand}" 
+                HorizontalOptions="FillAndExpand"
+                MinimumWidthRequest="100"
+                Margin="2.5,2,2.5,2"/>
+
+            <Button x:Name="DeleteButton"
+                Text="Delete"
+                Style="{StaticResource DeleteButtonStyle}"
+                Command="{Binding DeleteCommand}" 
+                HorizontalOptions="FillAndExpand"
+                MinimumWidthRequest="100"
+                Margin="2.5,2,2.5,2"/>
+        </Grid>
+
+        <ScrollView Grid.Row="1">
             <VerticalStackLayout Spacing="10" Margin="5">
                 <Label Text="Title" HorizontalOptions="Start" />
                 <Editor x:Name="TitleEditor"
@@ -37,47 +102,36 @@
                     WidthRequest="300"
                     HeightRequest="40"
                     HorizontalOptions="Start" />
+                <Label x:Name="TitleLabel" Text="{Binding Title}" />
 
                 <Label Text="Description" HorizontalOptions="Start" />
                 <Editor x:Name="DescriptionEditor"
                     Placeholder="Enter Description"
                     Text="{Binding Description}"
-                        HeightRequest="150"/>
+                    HeightRequest="150" />
+                <Label x:Name="DescriptionLabel" Text="{Binding Description}" />
 
                 <Label Text="Ingredients" HorizontalOptions="Start" />
                 <Editor x:Name="IngredientsEditor"
                     Placeholder="Enter Ingredients"
                     Text="{Binding Ingredients}"
-                    HeightRequest="150"/>
+                    HeightRequest="150" />
+                <Label x:Name="IngredientsLabel" Text="{Binding Ingredients}" />
 
                 <Label Text="Instructions" HorizontalOptions="Start" />
                 <Editor x:Name="InstructionsEditor"
                     Placeholder="Enter Instructions"
                     Text="{Binding Instructions}"
-                    HeightRequest="200"/>
+                    HeightRequest="200" />
+                <Label x:Name="InstructionsLabel" Text="{Binding Instructions}" />
 
                 <Label Text="Note" HorizontalOptions="Start" />
                 <Editor x:Name="TextEditor"
                     Placeholder="Enter your note"
                     Text="{Binding Text}"
-                    HeightRequest="200"/>
-                <!--
-                    WidthRequest="500"
-                    HorizontalOptions="Start" 
-                -->
+                    HeightRequest="200" />
+                <Label x:Name="TextLabel" Text="{Binding Text}" />
             </VerticalStackLayout>
         </ScrollView>
-        <HorizontalStackLayout Grid.Row="1" Spacing="10" Padding="5" HorizontalOptions="Center">
-            <Button Text="Save"
-                WidthRequest="250"
-                Style="{StaticResource SaveButtonStyle}"
-                Command="{Binding SaveCommand}" />
-
-            <Button Text="Delete"
-                WidthRequest="250"
-                Style="{StaticResource DeleteButtonStyle}"
-                Command="{Binding DeleteCommand}" />
-        </HorizontalStackLayout>
     </Grid>
-    
 </ContentPage>
