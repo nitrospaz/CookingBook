@@ -10,7 +10,7 @@
     <!-- This is for the header for the flyout -->
     <Shell.FlyoutHeader Title="Cooking Book">
         <Grid HeightRequest="100" BackgroundColor="DarkSlateBlue">
-            <Image Source="moon.png"/>
+            <Image Source="cake_edit_1.png"/>
         </Grid>
     </Shell.FlyoutHeader>
 
@@ -34,4 +34,14 @@
     <FlyoutItem Title="About" Icon="question.png">
         <ShellContent ContentTemplate="{DataTemplate local:AboutPage}"/>
     </FlyoutItem>
+
+    <!-- This is for the footer for the flyout -->
+    <Shell.FlyoutFooter>
+        <Grid HeightRequest="50" BackgroundColor="LightGray">
+            <Label Text="2025 Walker Crystal Software" 
+                   VerticalOptions="Center" 
+                   HorizontalOptions="Center" 
+                   TextColor="Black"/>
+        </Grid>
+    </Shell.FlyoutFooter>
 </Shell>
