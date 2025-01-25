@@ -10,6 +10,20 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
     private Models.Note _note;
     private bool _hasUnsavedChanges;
     private bool _isSaving;
+    private bool isEditMode = true;
+
+     public bool IsEditMode
+    {
+        get => isEditMode;
+        set
+        {
+            if (isEditMode != value)
+            {
+                isEditMode = value;
+                OnPropertyChanged();
+            }
+        }
+    }
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -93,6 +107,34 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
         DeleteCommand = new AsyncRelayCommand(Delete);
         BindingContext = this;
         Shell.Current.Navigating += OnShellNavigating;
+        ToggleEditMode(); // default to read mode
+    }
+
+    private void OnToggleEditMode(object sender, EventArgs e)
+    {
+        isEditMode = !isEditMode;
+        UpdateViewMode();
+    }
+
+    private void ToggleEditMode()
+    {
+        IsEditMode = !IsEditMode;
+        UpdateViewMode();
+    }
+
+    private void UpdateViewMode()
+    {
+        TitleEditor.IsVisible = isEditMode;
+        DescriptionEditor.IsVisible = isEditMode;
+        IngredientsEditor.IsVisible = isEditMode;
+        InstructionsEditor.IsVisible = isEditMode;
+        TextEditor.IsVisible = isEditMode;
+
+        TitleLabel.IsVisible = !isEditMode;
+        DescriptionLabel.IsVisible = !isEditMode;
+        IngredientsLabel.IsVisible = !isEditMode;
+        InstructionsLabel.IsVisible = !isEditMode;
+        TextLabel.IsVisible = !isEditMode;
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -106,7 +148,10 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
             }
             else
             {
+                // load blank note
                 _note = new Models.Note();
+                // toggle to edit mode from read mode
+                ToggleEditMode();
             }
         }
         else if (query.ContainsKey("load"))
@@ -186,7 +231,10 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
     protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        _hasUnsavedChanges = true;
+        if(propertyName != "IsEditMode")
+        {
+            _hasUnsavedChanges = true;
+        }
     }
 
     private async void OnShellNavigating(object sender, ShellNavigatingEventArgs e)
@@ -207,7 +255,7 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
         {
             e.Cancel(); // Cancel the navigation
 
-            string action = await DisplayActionSheet("There are unsaved changes. Do you want to save them before leaving this page?", "Cancel", null, "Save", "Discard");
+            string action = await DisplayActionSheet("There are unsaved changes \n on this page: ", "Cancel", null, "Save", "Discard");
             if (action == "Save")
             {
                 // Call the save command
