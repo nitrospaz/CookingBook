@@ -5,14 +5,14 @@
              Title="About CookingBook">
     <VerticalStackLayout Spacing="10" Margin="10">
         <HorizontalStackLayout Spacing="10">
-            <Image Source="dotnet_bot.png"
-               SemanticProperties.Description="The dot net bot waving hello!"
+            <Image Source="cake_edit_1.png"
+               SemanticProperties.Description="A cake with one candle on top."
                HeightRequest="64" />
             <Label x:Name="TitleLabel" FontSize="22" FontAttributes="Bold" VerticalOptions="End" />
             <Label x:Name="VersionLabel" FontSize="22" VerticalOptions="End" />
         </HorizontalStackLayout>
 
         <Label x:Name="MessageLabel" />
-        <Button Text="Learn more..." Clicked="OnLearnMoreClicked" />
+        <Button Text="Learn more at www.walkercrystalsoftware.com" Clicked="OnLearnMoreClicked" />
     </VerticalStackLayout>
 </ContentPage>
