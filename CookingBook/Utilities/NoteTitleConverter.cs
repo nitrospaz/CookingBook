@@ -9,13 +9,13 @@ namespace CookingBook.Utilities
 {
     class NoteTitleConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             var title = value as string;
             return string.IsNullOrEmpty(title) ? "New Recipe" : "View Recepie";
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

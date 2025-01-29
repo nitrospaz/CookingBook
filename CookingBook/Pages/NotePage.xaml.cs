@@ -12,7 +12,7 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
     private bool _isSaving;
     private bool isEditMode = true;
 
-     public bool IsEditMode
+    public bool IsEditMode
     {
         get => isEditMode;
         set
@@ -25,9 +25,9 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
         }
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public new event PropertyChangedEventHandler? PropertyChanged;
 
-    public string Title
+    public new string Title
     {
         get => _note.Title;
         set
@@ -100,8 +100,8 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
     public ICommand DeleteCommand { get; private set; }
 
     public NotePage()
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
         _note = new Models.Note();
         SaveCommand = new AsyncRelayCommand(Save);
         DeleteCommand = new AsyncRelayCommand(Delete);
@@ -141,7 +141,7 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
     {
         if (query.ContainsKey("new") && bool.TryParse(query["new"].ToString(), out bool isNew) && isNew)
         {
-            if(_hasUnsavedChanges)
+            if (_hasUnsavedChanges)
             {
                 // do nothing.
                 return;
@@ -156,7 +156,7 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
         }
         else if (query.ContainsKey("load"))
         {
-            _note = Models.Note.Load(query["load"].ToString());
+            _note = Models.Note.Load(query["load"]?.ToString() ?? string.Empty);
         }
         else
         {
@@ -228,16 +228,16 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
         await Shell.Current.GoToAsync("//AllNotesPage");
     }
 
-    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    protected new void OnPropertyChanged([CallerMemberName] string propertyName = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        if(propertyName != "IsEditMode")
+        if (propertyName != "IsEditMode")
         {
             _hasUnsavedChanges = true;
         }
     }
 
-    private async void OnShellNavigating(object sender, ShellNavigatingEventArgs e)
+    private async void OnShellNavigating(object? sender, ShellNavigatingEventArgs e)
     {
         // Check if the target page is NotePage and if it is a new note being created
         if (e.Target.Location.OriginalString.Contains("NotePage") && e.Target.Location.OriginalString.Contains("new=true"))

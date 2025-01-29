@@ -27,6 +27,12 @@ namespace CookingBook.Models
         public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
 
+        private static readonly JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+        };
+
         public Note()
         {
             // The constructor initializes the note with a random filename
@@ -77,11 +83,7 @@ namespace CookingBook.Models
                     Note noteData;
                     try
                     {
-                        noteData = JsonSerializer.Deserialize<Note>(fileContent, new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true,
-                            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
-                        });
+                        noteData = JsonSerializer.Deserialize<Note>(fileContent, jsonSerializerOptions) ?? new Note { Text = fileContent };
                     }
                     catch (JsonException)
                     {
