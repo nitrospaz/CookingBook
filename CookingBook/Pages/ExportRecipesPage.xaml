@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CookingBook.Pages.ExportRecipesPage"
+             Title="Export Recipes">
+    <StackLayout Padding="10">
+        <Label Text="Options:" VerticalOptions="Center"/>
+        <HorizontalStackLayout>
+            <Label Text="Check this box to add date-time stamp to file name:" VerticalOptions="Center"/>
+            <CheckBox x:Name="DateTimeStampCheckBox" IsChecked="False" VerticalOptions="Center"/>
+        </HorizontalStackLayout>
+        <Button Text="Export to CSV" Clicked="OnExportToCsvClicked"/>
+    </StackLayout>
+</ContentPage>

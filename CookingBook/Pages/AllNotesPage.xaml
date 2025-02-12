@@ -32,7 +32,7 @@
                     <DataTemplate>
                         <StackLayout>
                             <Label Text="{Binding Title}" FontSize="22"/>
-                            <Label Text="{Binding DateModified}" FontSize="14" TextColor="Silver"/>
+                            <Label Text="{Binding DateModified, StringFormat='Last Modified: {0:ddd, dd MMM yyyy - hh:mm tt}'}" FontSize="14" TextColor="Silver"/>
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
