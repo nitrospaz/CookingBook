@@ -18,16 +18,12 @@ public partial class ExportRecipesPage : ContentPage
         // Convert recipes to CSV format
         var csv = ConvertRecipesToCsv(recipes);
 
-        //// Save the CSV file
-        //var filePath = Path.Combine(FileSystem.AppDataDirectory, "recipes.csv");
-        //File.WriteAllText(filePath, csv);
-
         // Get the desktop path
         var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         var fileName = "recipes.csv";
 
         // Check if the checkbox is checked
-        if (DateTimeStampCheckBox.IsChecked == true)
+        if (DateTimeStampCheckBox?.IsChecked == true)
         {
             // Get the current date and time
             var dateTimeStamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
