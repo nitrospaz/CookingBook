@@ -2,13 +2,32 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CookingBook.Pages.ExportRecipesPage"
-             Title="Export Recipes">
+             Title="Save Recipes">
     <StackLayout Padding="10">
-        <Label Text="Options:" VerticalOptions="Center"/>
+        <!-- start options -->
+        <Label Text="Options:" FontSize="21" VerticalOptions="Center"/>
+        <Label Text="Save to Desktop" FontSize="18" VerticalOptions="Center"/>
         <HorizontalStackLayout>
-            <Label Text="Check this box to add date-time stamp to file name:" VerticalOptions="Center"/>
-            <CheckBox x:Name="DateTimeStampCheckBox" IsChecked="False" VerticalOptions="Center"/>
+            <CheckBox x:Name="SelectAllCheckBox" IsChecked="False" VerticalOptions="Center" CheckedChanged="OnSelectAllCheckedChanged"/>
+            <Label Text="Select All Recipes" FontSize="18" VerticalOptions="Center"/>
         </HorizontalStackLayout>
-        <Button Text="Export to CSV" Clicked="OnExportToCsvClicked"/>
+        
+        <!-- end options line -->
+        <BoxView HeightRequest="1" Color="Black" Margin="0,10,0,10"/>
+
+        <!-- select recipes list -->
+        <CollectionView x:Name="RecipesCollectionView" SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding IsSelected}" VerticalOptions="Center"/>
+                        <Label Text="{Binding Recipe.Title}" VerticalOptions="Center" Margin="10,0,0,0"/>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- export button -->
+        <Button Text="Save to CSV" Clicked="OnExportToCsvClicked"/>
     </StackLayout>
 </ContentPage>

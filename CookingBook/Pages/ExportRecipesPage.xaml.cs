@@ -5,30 +5,40 @@ namespace CookingBook.Pages;
 
 public partial class ExportRecipesPage : ContentPage
 {
-	public ExportRecipesPage()
-	{
-		InitializeComponent();
-	}
+    public ExportRecipesPage()
+    {
+        InitializeComponent();
+        LoadRecipes();
+    }
+
+    private void LoadRecipes()
+    {
+        var recipes = Note.LoadAll();
+        RecipesCollectionView.ItemsSource = recipes.Select(r => new SelectableRecipe { Recipe = r }).ToList();
+    }
+
+    private void OnSelectAllCheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        var selectAll = e.Value;
+        var recipes = RecipesCollectionView.ItemsSource.Cast<SelectableRecipe>().ToList();
+        foreach (var recipe in recipes)
+        {
+            recipe.IsSelected = selectAll;
+        }
+        RecipesCollectionView.ItemsSource = recipes; // Refresh the CollectionView
+    }
 
     private async void OnExportToCsvClicked(object sender, EventArgs e)
     {
-        // Fetch recipes from your data source
-        var recipes = Note.LoadAll();
+        // Fetch selected recipes
+        var selectedRecipes = RecipesCollectionView.ItemsSource.Cast<SelectableRecipe>().Where(r => r.IsSelected).Select(r => r.Recipe);
 
         // Convert recipes to CSV format
-        var csv = ConvertRecipesToCsv(recipes);
+        var csv = ConvertRecipesToCsv(selectedRecipes);
 
         // Get the desktop path
         var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         var fileName = "recipes.csv";
-
-        // Check if the checkbox is checked
-        if (DateTimeStampCheckBox?.IsChecked == true)
-        {
-            // Get the current date and time
-            var dateTimeStamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            fileName = $"recipes_{dateTimeStamp}.csv";
-        }
 
         var filePath = Path.Combine(desktopPath, fileName);
 
@@ -61,4 +71,10 @@ public partial class ExportRecipesPage : ContentPage
         }
         return field;
     }
+}
+
+public class SelectableRecipe
+{
+    public Note Recipe { get; set; }
+    public bool IsSelected { get; set; }
 }
