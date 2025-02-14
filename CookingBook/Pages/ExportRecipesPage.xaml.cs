@@ -54,6 +54,7 @@ public partial class ExportRecipesPage : ContentPage
 
     private async void OnExportToCsvClicked(object sender, EventArgs e)
     {
+        // TODO it works for windows, need to make it work for android
         // Fetch selected recipes
         var selectedRecipes = RecipesCollectionView.ItemsSource.Cast<SelectableRecipe>().Where(r => r.IsSelected).Select(r => r.Recipe);
 
