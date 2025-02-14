@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CookingBook.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,6 +39,8 @@ namespace CookingBook.Models
 
         public void Save()
         {
+            // The information to be saved by the Save method comes from the properties of the Note class instance.
+            // These properties (Title, Rating, Description, etc.) are set elsewhere in the application before the Save method is called.
             var noteData = new
             {
                 Title,
@@ -57,7 +60,48 @@ namespace CookingBook.Models
             };
 
             var json = JsonSerializer.Serialize(noteData);
-            File.WriteAllText(Path.Combine(FileSystem.AppDataDirectory, Filename), json);
+            string filePath = Path.Combine(FileSystem.AppDataDirectory, Filename);
+
+            int maxRetries = 3;
+            int delay = 2000; // 2 seconds
+
+            // check if the file is locked and retry saving after a delay
+            for (int i = 0; i < maxRetries; i++)
+            {
+                if (!FileAccessUtility.IsFileLocked(filePath))
+                {
+                    File.WriteAllText(filePath, json);
+                    return;
+                }
+                Task.Delay(delay).Wait();
+            }
+
+            // If the file is still locked after the retries, append *NEW* to the title and save to a new file
+            Title += " *NEW*";
+            noteData = new
+            {
+                Title,
+                Rating,
+                Description,
+                Ingredients,
+                Instructions,
+                Comments,
+                Categories,
+                Tags,
+                Author,
+                Source,
+                SourceUrl,
+                Text,
+                DateCreated,
+                DateModified
+            };
+            json = JsonSerializer.Serialize(noteData);
+
+            string newFilename = $"{Path.GetRandomFileName()}.notes.txt";
+            string newFilePath = Path.Combine(FileSystem.AppDataDirectory, newFilename);
+            File.WriteAllText(newFilePath, json);
+            Filename = newFilename; // Update the Filename property to the new file
+            return;
         }
 
         public void Delete() =>
