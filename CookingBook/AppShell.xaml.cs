@@ -27,10 +27,20 @@ namespace CookingBook
                 isNavigating = true;
                 if (Shell.Current != null && Shell.Current.IsLoaded)
                 {
-                    await Shell.Current.GoToAsync("//AllNotesPage");
-                    Debug.WriteLine("Navigating to AllNotesPage");
+                    try
+                    {
+                        await Shell.Current.GoToAsync("//AllNotesPage");
+                        Debug.WriteLine("Navigating to AllNotesPage");
+                    }
+                    finally
+                    {
+                        isNavigating = false;
+                    }
                 }
-                isNavigating = false;
+                else
+                {
+                    isNavigating = false;
+                }
             }
         }
     }

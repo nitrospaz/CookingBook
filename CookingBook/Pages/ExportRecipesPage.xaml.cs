@@ -73,15 +73,37 @@ public partial class ExportRecipesPage : ContentPage
             var overwrite = await DisplayAlert("File Exists", $"The file {fileName} already exists. Do you want to overwrite it?", "Yes", "No");
             if (!overwrite)
             {
+                // If the user does not want to overwrite the file, return
                 return;
             }
+            else
+            {
+                // if they want to overwrite, check to see if the file is locked
+                if (FileAccessUtility.IsFileLocked(filePath))
+                {
+                    await DisplayAlert("File In Use.", $"The file {fileName} is currently in use. Please close the file and try again.", "OK");
+                    return;
+                }
+            }
         }
-
-        // check to see if the file is locked
-        if (FileAccessUtility.IsFileLocked(filePath))
-        {
-            await DisplayAlert("File In Use.", $"The file {fileName} is currently in use. Please close the file and try again.", "OK");
-            return;
+        else
+        {             
+            // If the file does not exist, check to see if the directory exists
+            var directory = Path.GetDirectoryName(filePath);
+            if (!Directory.Exists(directory))
+            {
+                try
+                {
+                    // If the directory does not exist, create it
+                    Directory.CreateDirectory(directory);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Directory not created. Error: " + ex);
+                    await DisplayAlert("Export Failed", $"Something went wrong. Directory not available.", "OK");
+                    return;
+                }
+            }
         }
 
         try
@@ -92,14 +114,13 @@ public partial class ExportRecipesPage : ContentPage
             // Notify the user
             await DisplayAlert("Export Successful", $"Recipes exported to {filePath}", "OK");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Debug.WriteLine("Write not successful. Error: " + ex);
 
             // Notify the user
             await DisplayAlert("Export Failed", $"Something went wrong.", "OK");
         }
-
     }
 
     private string ConvertRecipesToCsv(IEnumerable<Note> recipes)
