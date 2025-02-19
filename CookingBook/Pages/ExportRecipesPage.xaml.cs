@@ -32,6 +32,9 @@ public partial class ExportRecipesPage : ContentPage
 
     private void ClearSelections()
     {
+        if (RecipesCollectionView.ItemsSource == null)
+            return;
+
         var recipes = RecipesCollectionView.ItemsSource.Cast<SelectableRecipe>().ToList();
         foreach (var recipe in recipes)
         {
