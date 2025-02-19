@@ -1,7 +1,16 @@
 ﻿using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Windows.Graphics;
+using Application = Microsoft.Maui.Controls.Application;
+using Button = Microsoft.UI.Xaml.Controls.Button;
+using Colors = Microsoft.UI.Colors;
+using Grid = Microsoft.UI.Xaml.Controls.Grid;
+using HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment;
+using SolidColorBrush = Microsoft.UI.Xaml.Media.SolidColorBrush;
+using Thickness = Microsoft.UI.Xaml.Thickness;
+using VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -37,6 +46,29 @@ namespace CookingBook.WinUI
             var windowId = Win32Interop.GetWindowIdFromWindow(windowHandle);
             var appWindow = AppWindow.GetFromWindowId(windowId);
             appWindow.Resize(new SizeInt32(width, height));
+
+            // set custom title bar
+            var titleBar = appWindow.TitleBar;
+            titleBar.ExtendsContentIntoTitleBar = true;
+            titleBar.ButtonBackgroundColor = Colors.Transparent;
+
+            var appTitleBar = new TextBlock
+            {
+                Text = "Cooking Book",
+                FontSize = 32,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 0, 0, 0)
+            };
+
+            var appTitleBarContainer = new Grid
+            {
+                Background = new SolidColorBrush(Colors.Transparent),
+                Children = { appTitleBar }
+            };
+
+            window.ExtendsContentIntoTitleBar = true;
+            window.SetTitleBar(appTitleBarContainer);
         }
     }
 }

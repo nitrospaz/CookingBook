@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel.Design;
+using System.Diagnostics;
+using System.Windows.Input;
 
 namespace CookingBook
 {
@@ -6,9 +8,14 @@ namespace CookingBook
     {
         private bool isNavigating = false;
 
+        //public ICommand MenuCommand { get; private set; }
+
         public AppShell()
         {
             InitializeComponent();
+
+            //MenuCommand = new Command(OnMenuClicked);
+            //BindingContext = this; // Set the BindingContext after initializing the collection
 
             // Register routes for the pages
             // Every page that can be navigated to from another page,
@@ -43,5 +50,10 @@ namespace CookingBook
                 }
             }
         }
+
+        //private void OnMenuClicked(object sender)
+        //{
+        //    Shell.Current.FlyoutIsPresented = true;
+        //}
     }
 }

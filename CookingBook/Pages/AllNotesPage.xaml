@@ -3,41 +3,60 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CookingBook.Pages.AllNotesPage"
              Title="All Recipes">
-    <!-- Add an item to the toolbar -->
-    <!-- <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add" Command="{Binding NewCommand}" IconImageSource="{FontImage Glyph='+', Color=Black, Size=22}" />
-    </ContentPage.ToolbarItems> -->
-    
-    <ScrollView>
-        <StackLayout>
-            <!-- Add Button for adding a new recipe -->
-            <Button Text="Add New Recipe" 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add New Recipe" Command="{Binding AddNewRecipeCommand}" IconImageSource="{FontImage Glyph='+', Color={StaticResource Primary}, Size=32}" />
+    </ContentPage.ToolbarItems>
+    <Grid>
+        <!-- Custom Navigation Bar -->
+        <Grid RowDefinitions="Auto, *">
+            <!--
+            <Grid ColumnDefinitions="Auto, *" Padding="10">
+                <Button Text="Menu" 
+                        Clicked="OnMenuClicked1"
+                        HorizontalOptions="Start" 
+                        VerticalOptions="Center"
+                        />
+                <Button Text="Add New Recipe" 
+                         Command="{Binding AddNewRecipeCommand}" 
+                         Margin="20" 
+                        HorizontalOptions="Start" 
+                        VerticalOptions="Center"
+                        Grid.Column="1"/>
+
+            </Grid>
+            -->
+            <ScrollView Grid.Row="1">
+                <StackLayout>
+                    <Label Text="This page lists all your saved recipes." FontSize="16" VerticalOptions="Center" Margin="0,0,0,10"/>
+                    <!-- Add Button for adding a new recipe -->
+                    <Button Text="Add New Recipe" 
                  Command="{Binding AddNewRecipeCommand}" 
                  Margin="20" />
-            <CollectionView 
-                x:Name="NotesCollectionView" 
-                ItemsSource="{Binding AllNotes}"
-                Margin="20"
-                SelectionMode="Single"
-                SelectionChanged="OnSelectionChanged"
-                SelectionChangedCommandParameter="{Binding Source={RelativeSource Self}, Path=SelectedItem}">
+                    <CollectionView 
+                        x:Name="NotesCollectionView" 
+                        ItemsSource="{Binding AllNotes}"
+                        Margin="20"
+                        SelectionMode="Single"
+                        SelectionChanged="OnSelectionChanged"
+                        SelectionChangedCommandParameter="{Binding Source={RelativeSource Self}, Path=SelectedItem}">
 
-                <!-- Designate how the collection of items are laid out -->
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
-                </CollectionView.ItemsLayout>
+                        <!-- Designate how the collection of items are laid out -->
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+                        </CollectionView.ItemsLayout>
 
-                <!-- Define the appearance of each item in the list -->
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <StackLayout>
-                            <Label Text="{Binding Title}" FontSize="22"/>
-                            <Label Text="{Binding DateModified, StringFormat='Last Modified: {0:ddd, dd MMM yyyy - hh:mm tt}'}" FontSize="14" TextColor="Silver"/>
-                        </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </StackLayout>
-    </ScrollView>
-
+                        <!-- Define the appearance of each item in the list -->
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout>
+                                    <Label Text="{Binding Title}" FontSize="22"/>
+                                    <Label Text="{Binding DateModified, StringFormat='Last Modified: {0:ddd, dd MMM yyyy - hh:mm tt}'}" FontSize="14" TextColor="Silver"/>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </ScrollView>
+        </Grid>
+    </Grid>
 </ContentPage>
