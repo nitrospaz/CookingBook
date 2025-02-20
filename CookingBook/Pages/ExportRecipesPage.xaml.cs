@@ -65,9 +65,28 @@ public partial class ExportRecipesPage : ContentPage
         var csv = ConvertRecipesToCsv(selectedRecipes);
 
         // Get the file path
-        var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        string filePath = string.Empty;
         var fileName = "recipes.csv";
-        var filePath = Path.Combine(desktopPath, fileName);
+
+        if (DeviceInfo.Platform == DevicePlatform.Android)
+        {
+            // For Android, save the file in the Documents folder
+            // TODO this isnt visible to the user...
+            var externalStoragePath = FileSystem.Current.AppDataDirectory;
+            filePath = Path.Combine(externalStoragePath, fileName);
+        }
+        else if (DeviceInfo.Platform == DevicePlatform.WinUI)
+        {
+            // For Windows, save the file in the Documents folder
+            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            filePath = Path.Combine(documentsPath, fileName);
+        }
+        else
+        {
+            // For other platforms, save the file in the Documents folder
+            var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            filePath = Path.Combine(desktopPath, fileName);
+        }
 
         // check to see if the file exists
         if (File.Exists(filePath))
@@ -90,7 +109,7 @@ public partial class ExportRecipesPage : ContentPage
             }
         }
         else
-        {             
+        {
             // If the file does not exist, check to see if the directory exists
             var directory = Path.GetDirectoryName(filePath);
             if (!Directory.Exists(directory))
@@ -111,8 +130,8 @@ public partial class ExportRecipesPage : ContentPage
 
         try
         {
-            // Save the CSV file
-            File.WriteAllText(filePath, csv);
+            // Save the CSV file with UTF-8 encoding
+            File.WriteAllText(filePath, csv, Encoding.UTF8);
 
             // Notify the user
             await DisplayAlert("Export Successful", $"Recipes exported to {filePath}", "OK");
@@ -141,7 +160,7 @@ public partial class ExportRecipesPage : ContentPage
 
     private string EscapeCsvField(string field)
     {
-        if (field.Contains(",") || field.Contains("\"") || field.Contains("\n"))
+        if (field.Contains(",") || field.Contains("\"") || field.Contains("\n") || field.Contains("\r") || field.Contains("\t"))
         {
             field = field.Replace("\"", "\"\"");
             return $"\"{field}\"";
