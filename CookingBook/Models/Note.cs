@@ -1,6 +1,9 @@
-﻿using System;
+﻿using CookingBook.Utilities;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -38,6 +41,8 @@ namespace CookingBook.Models
 
         public void Save()
         {
+            // The information to be saved by the Save method comes from the properties of the Note class instance.
+            // These properties (Title, Rating, Description, etc.) are set elsewhere in the application before the Save method is called.
             var noteData = new
             {
                 Title,
@@ -57,7 +62,89 @@ namespace CookingBook.Models
             };
 
             var json = JsonSerializer.Serialize(noteData);
-            File.WriteAllText(Path.Combine(FileSystem.AppDataDirectory, Filename), json);
+            string filePath = Path.Combine(FileSystem.AppDataDirectory, Filename);
+
+            // check if file exists
+            if(!File.Exists(filePath))
+            {
+                // If the file does not exist, check to see if the directory exists
+                var directory = Path.GetDirectoryName(filePath);
+                if (!Directory.Exists(directory))
+                {
+                    try
+                    {
+                        // If the directory does not exist, try to create it
+                        Directory.CreateDirectory(directory);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Directory not created. Error: " + ex);
+                        return;
+                    }
+                }
+                // if directory exists, continue to save the file...
+            }
+            else
+            {
+                // the file exists
+                int maxRetries = 3;
+                int delay = 2000; // 2 seconds
+
+                // loop to check if the file is locked
+                for (int i = 0; i < maxRetries; i++)
+                {
+                    if (!FileAccessUtility.IsFileLocked(filePath))
+                    {
+                        // file not locked, break the loop and save
+                        break;
+                    }
+                    else
+                    {
+                        // file is locked, 
+                        // if we havent reached the max retries
+                        if (!(i == maxRetries - 1))
+                        {
+                            // delay for time, then retry save
+                            Task.Delay(delay).Wait();
+                        }
+                        else
+                        {
+                            // If the file is still locked after the max retries,
+                            // append *NEW* to the title and save to a new file
+                            Title += " *NEW*";
+                            noteData = new
+                            {
+                                Title,
+                                Rating,
+                                Description,
+                                Ingredients,
+                                Instructions,
+                                Comments,
+                                Categories,
+                                Tags,
+                                Author,
+                                Source,
+                                SourceUrl,
+                                Text,
+                                DateCreated,
+                                DateModified
+                            };
+                            json = JsonSerializer.Serialize(noteData);
+
+                            string newFilename = $"{Path.GetRandomFileName()}.notes.txt";
+                            string newFilePath = Path.Combine(FileSystem.AppDataDirectory, newFilename);
+                            File.WriteAllText(newFilePath, json);
+                            Filename = newFilename; // Update the Filename property to the new file
+                            return;
+                        }
+                    }
+                }
+            }
+
+            // if directory exists or file exists and is not locked
+            // continue to write data...
+            File.WriteAllText(filePath, json);
+            return;
         }
 
         public void Delete() =>
