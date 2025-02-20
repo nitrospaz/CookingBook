@@ -1,4 +1,5 @@
 using CookingBook.Models;
+using CookingBook.Services;
 using CookingBook.Utilities;
 using System.Diagnostics;
 using System.Text;
@@ -70,10 +71,36 @@ public partial class ExportRecipesPage : ContentPage
 
         if (DeviceInfo.Platform == DevicePlatform.Android)
         {
-            // For Android, save the file in the Documents folder
-            // TODO this isnt visible to the user...
-            var externalStoragePath = FileSystem.Current.AppDataDirectory;
-            filePath = Path.Combine(externalStoragePath, fileName);
+            try
+            {
+                var fileService = DependencyService.Get<IFileService>();
+                if (fileService == null)
+                {
+                    Debug.WriteLine("IFileService is not registered with DependencyService.");
+                    await DisplayAlert("Export Failed", "File service is not available.", "OK");
+                    return;
+                }
+
+                if (csv == null)
+                {
+                    Debug.WriteLine("CSV content is null.");
+                    await DisplayAlert("Export Failed", "CSV content is null.", "OK");
+                    return;
+                }
+
+                // Save the CSV file
+                await fileService.CreateCsvFileAsync("recipes.csv", csv);
+
+                // Notify the user
+                await DisplayAlert("Export Successful", "CSV file saved to Downloads folder.", "OK");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception occurred while creating CSV file: " + ex);
+                await DisplayAlert("Export Failed", $"An error occurred: {ex.Message}", "OK");
+            }
+
+            return;
         }
         else if (DeviceInfo.Platform == DevicePlatform.WinUI)
         {
@@ -141,7 +168,7 @@ public partial class ExportRecipesPage : ContentPage
             Debug.WriteLine("Write not successful. Error: " + ex);
 
             // Notify the user
-            await DisplayAlert("Export Failed", $"Something went wrong.", "OK");
+            await DisplayAlert("Export Failed", $"Error trying to write the file.", "OK");
         }
     }
 
