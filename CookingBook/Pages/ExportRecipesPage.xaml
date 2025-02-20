@@ -7,7 +7,7 @@
         <!-- start options -->
         <StackLayout Grid.Row="0">
             <Label Text="Options:" FontSize="21" VerticalOptions="Center"/>
-            <Label Text="Save to Desktop" FontSize="18" VerticalOptions="Center"/>
+            <Label  x:Name="SaveLocationLabel" FontSize="18" VerticalOptions="Center"/>
             <HorizontalStackLayout>
                 <CheckBox x:Name="SelectAllCheckBox" IsChecked="False" VerticalOptions="Center" CheckedChanged="OnSelectAllCheckedChanged"/>
                 <Label Text="Select All Recipes" FontSize="18" VerticalOptions="Center"/>

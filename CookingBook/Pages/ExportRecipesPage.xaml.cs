@@ -11,6 +11,23 @@ public partial class ExportRecipesPage : ContentPage
     public ExportRecipesPage()
     {
         InitializeComponent();
+        SetSaveLocationLabel();
+    }
+
+    private void SetSaveLocationLabel()
+    {
+        if (DeviceInfo.Platform == DevicePlatform.Android)
+        {
+            SaveLocationLabel.Text = "Save to Downloads Folder";
+        }
+        else if (DeviceInfo.Platform == DevicePlatform.WinUI)
+        {
+            SaveLocationLabel.Text = "Save to My Documents Folder";
+        }
+        else
+        {
+            SaveLocationLabel.Text = "Save to Documents Folder";
+        }
     }
 
     protected override void OnAppearing()
