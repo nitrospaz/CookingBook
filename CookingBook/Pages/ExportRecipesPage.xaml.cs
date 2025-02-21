@@ -1,6 +1,7 @@
 using CookingBook.Models;
 using CookingBook.Services;
 using CookingBook.Utilities;
+using Microsoft.Maui.Storage;
 using System.Diagnostics;
 using System.Text;
 
@@ -8,9 +9,12 @@ namespace CookingBook.Pages;
 
 public partial class ExportRecipesPage : ContentPage
 {
+    private readonly AlertService _alertService;
+
     public ExportRecipesPage()
     {
         InitializeComponent();
+        _alertService = new AlertService(this);
         SetSaveLocationLabel();
     }
 
@@ -75,117 +79,48 @@ public partial class ExportRecipesPage : ContentPage
 
     private async void OnExportToCsvClicked(object sender, EventArgs e)
     {
-        // TODO it works for windows, need to make it work for android
         // Fetch selected recipes
         var selectedRecipes = RecipesCollectionView.ItemsSource.Cast<SelectableRecipe>().Where(r => r.IsSelected).Select(r => r.Recipe);
 
         // Convert recipes to CSV format
         var csv = ConvertRecipesToCsv(selectedRecipes);
-
-        // Get the file path
-        string filePath = string.Empty;
-        var fileName = "recipes.csv";
-
-        if (DeviceInfo.Platform == DevicePlatform.Android)
+        if ((DeviceInfo.Platform == DevicePlatform.Android) || (DeviceInfo.Platform == DevicePlatform.WinUI))
         {
+            if (string.IsNullOrEmpty(csv))
+            {
+                Debug.WriteLine("CSV content is null or empty.");
+                await _alertService.DisplayAlert("Export Failed", "CSV content is null or empty.", "OK");
+                return;
+            }
+
+            var fileName = "recipes.csv";
+            var fileService = DependencyService.Get<IFileService>();
+
+            if (fileService == null)
+            {
+                Debug.WriteLine("IFileService is not registered with DependencyService.");
+                await _alertService.DisplayAlert("Export Failed", "File service is not available.", "OK");
+                return;
+            }
+
             try
             {
-                var fileService = DependencyService.Get<IFileService>();
-                if (fileService == null)
-                {
-                    Debug.WriteLine("IFileService is not registered with DependencyService.");
-                    await DisplayAlert("Export Failed", "File service is not available.", "OK");
-                    return;
-                }
-
-                if (csv == null)
-                {
-                    Debug.WriteLine("CSV content is null.");
-                    await DisplayAlert("Export Failed", "CSV content is null.", "OK");
-                    return;
-                }
-
                 // Save the CSV file
-                await fileService.CreateCsvFileAsync("recipes.csv", csv);
+                await fileService.CreateCsvFileAsync(fileName, csv);
 
                 // Notify the user
-                await DisplayAlert("Export Successful", "CSV file saved to Downloads folder.", "OK");
+                await _alertService.DisplayAlert("Export Successful", "CSV file saved successfully.", "OK");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("Exception occurred while creating CSV file: " + ex);
-                await DisplayAlert("Export Failed", $"An error occurred: {ex.Message}", "OK");
-            }
-
-            return;
-        }
-        else if (DeviceInfo.Platform == DevicePlatform.WinUI)
-        {
-            // For Windows, save the file in the Documents folder
-            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            filePath = Path.Combine(documentsPath, fileName);
-        }
-        else
-        {
-            // For other platforms, save the file in the Documents folder
-            var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            filePath = Path.Combine(desktopPath, fileName);
-        }
-
-        // check to see if the file exists
-        if (File.Exists(filePath))
-        {
-            // If the file exists, ask the user if they want to overwrite it
-            var overwrite = await DisplayAlert("File Exists", $"The file {fileName} already exists. Do you want to overwrite it?", "Yes", "No");
-            if (!overwrite)
-            {
-                // If the user does not want to overwrite the file, return
-                return;
-            }
-            else
-            {
-                // if they want to overwrite, check to see if the file is locked
-                if (FileAccessUtility.IsFileLocked(filePath))
-                {
-                    await DisplayAlert("File In Use.", $"The file {fileName} is currently in use. Please close the file and try again.", "OK");
-                    return;
-                }
+                await _alertService.DisplayAlert("Export Failed", $"An error occurred: {ex.Message}", "OK");
             }
         }
         else
         {
-            // If the file does not exist, check to see if the directory exists
-            var directory = Path.GetDirectoryName(filePath);
-            if (!Directory.Exists(directory))
-            {
-                try
-                {
-                    // If the directory does not exist, create it
-                    Directory.CreateDirectory(directory);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("Directory not created. Error: " + ex);
-                    await DisplayAlert("Export Failed", $"Something went wrong. Directory not available.", "OK");
-                    return;
-                }
-            }
-        }
-
-        try
-        {
-            // Save the CSV file with UTF-8 encoding
-            File.WriteAllText(filePath, csv, Encoding.UTF8);
-
-            // Notify the user
-            await DisplayAlert("Export Successful", $"Recipes exported to {filePath}", "OK");
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine("Write not successful. Error: " + ex);
-
-            // Notify the user
-            await DisplayAlert("Export Failed", $"Error trying to write the file.", "OK");
+            Debug.WriteLine("You havent implemented and tested this feature for the other platforms yet.");
+            await DisplayAlert("Export Failed", $"This feature not available for this platform yet.", "OK");
         }
     }
 
