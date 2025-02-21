@@ -3,10 +3,13 @@
 // we need to specify the if for platform-specific implementation
 // otherwise it wont compile for other platforms
 #if ANDROID
-// this is only implemented for android right now
-// will probably need to be implemented for other platforms later...
 using FileService = CookingBook.Platforms.Android.Services.FileService;
 #endif
+
+#if WINDOWS
+using FileService = CookingBook.Platforms.Windows.Services.FileService;
+#endif
+
 
 namespace CookingBook
 {
@@ -15,11 +18,22 @@ namespace CookingBook
         public App()
         {
             InitializeComponent();
+
+            // assign main page before registering the services!
+            MainPage = new AppShell();
+
 #if ANDROID
             // Register the FileService with the DependencyService
             DependencyService.Register<IFileService, FileService>();
 #endif
-            MainPage = new AppShell();
+
+#if WINDOWS
+            // Register the FileService with the DependencyService
+            DependencyService.Register<IFileService, FileService>();
+#endif
+
+            // Register the alert service
+            DependencyService.RegisterSingleton<IAlertService>(new AlertService(MainPage));
         }
     }
 }
