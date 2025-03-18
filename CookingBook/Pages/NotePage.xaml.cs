@@ -2,11 +2,13 @@ using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using CookingBook.Services;
 
 namespace CookingBook.Pages;
 
 public partial class NotePage : ContentPage, IQueryAttributable, INotifyPropertyChanged
 {
+    private ISqLiteService _dataAccess;
     private Models.Note _note;
     private bool _hasUnsavedChanges;
     private bool _isSaving;
@@ -94,14 +96,15 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
 
     public DateTime DateModified => _note.DateModified;
 
-    public string Identifier => _note.Filename;
+    public int Identifier => _note.Id;
 
     public ICommand SaveCommand { get; private set; }
     public ICommand DeleteCommand { get; private set; }
 
-    public NotePage()
+    public NotePage(ISqLiteService sqLiteService)
 	{
 		InitializeComponent();
+        _dataAccess = sqLiteService;
         _note = new Models.Note();
         SaveCommand = new AsyncRelayCommand(Save);
         DeleteCommand = new AsyncRelayCommand(Delete);
@@ -137,7 +140,7 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
         TextLabel.IsVisible = !isEditMode;
     }
 
-    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         if (query.ContainsKey("new") && bool.TryParse(query["new"].ToString(), out bool isNew) && isNew)
         {
@@ -154,9 +157,10 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
                 ToggleEditMode();
             }
         }
-        else if (query.ContainsKey("load"))
+        else if (query.ContainsKey("load") && int.TryParse(query["load"].ToString(), out int id))
         {
-            _note = Models.Note.Load(query["load"].ToString());
+            //_note = Models.Note.Load(query["load"].ToString());
+            _note = await _dataAccess.GetNoteAsync(id);
         }
         else
         {
@@ -165,9 +169,10 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
         RefreshProperties();
     }
 
-    public void Reload()
+    public async void Reload()
     {
-        _note = Models.Note.Load(_note.Filename);
+        //_note = Models.Note.Load(_note.Filename);
+        _note = await _dataAccess.GetNoteAsync(_note.Id);
         RefreshProperties();
     }
 
@@ -199,8 +204,9 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
 
         _isSaving = true;
         _note.DateModified = DateTime.Now;
-        _note.Save();
-        await Shell.Current.GoToAsync($"..?saved={_note.Filename}");
+        //_note.Save();
+        await _dataAccess.SaveNoteAsync(_note);
+        await Shell.Current.GoToAsync($"..?saved={_note.Id}");
 
         // Clear the page
         ClearPage();
@@ -218,8 +224,9 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
 
     private async Task Delete()
     {
-        _note.Delete();
-        await Shell.Current.GoToAsync($"..?deleted={_note.Filename}");
+        //_note.Delete();
+        await _dataAccess.DeleteNoteAsync(_note);
+        await Shell.Current.GoToAsync($"..?deleted={_note.Id}");
 
         // Clear the page
         ClearPage();
