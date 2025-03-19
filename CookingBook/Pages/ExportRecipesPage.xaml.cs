@@ -1,4 +1,4 @@
-using CookingBook.Models;
+using ClassLibrary1.Models;
 using CookingBook.Services;
 using CookingBook.Utilities;
 using Microsoft.Maui.Storage;

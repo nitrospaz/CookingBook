@@ -3,13 +3,14 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CookingBook.Services;
+using ClassLibrary1.Models;
 
 namespace CookingBook.Pages;
 
 public partial class NotePage : ContentPage, IQueryAttributable, INotifyPropertyChanged
 {
     private ISqLiteService _dataAccess;
-    private Models.Note _note;
+    private Note _note;
     private bool _hasUnsavedChanges;
     private bool _isSaving;
     private bool isEditMode = true;
@@ -105,7 +106,7 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
 	{
 		InitializeComponent();
         _dataAccess = sqLiteService;
-        _note = new Models.Note();
+        _note = new Note();
         SaveCommand = new AsyncRelayCommand(Save);
         DeleteCommand = new AsyncRelayCommand(Delete);
         BindingContext = this;
@@ -152,7 +153,7 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
             else
             {
                 // load blank note
-                _note = new Models.Note();
+                _note = new Note();
                 // toggle to edit mode from read mode
                 ToggleEditMode();
             }
@@ -164,7 +165,7 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
         }
         else
         {
-            _note = new Models.Note();
+            _note = new Note();
         }
         RefreshProperties();
     }
@@ -179,7 +180,7 @@ public partial class NotePage : ContentPage, IQueryAttributable, INotifyProperty
     public void ClearPage()
     {
         // Clear the page
-        _note = new Models.Note();
+        _note = new Note();
         RefreshProperties();
     }
 

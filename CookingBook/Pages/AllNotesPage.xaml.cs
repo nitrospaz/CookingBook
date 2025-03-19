@@ -1,5 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
-using CookingBook.Models;
+using ClassLibrary1.Models;
 using CookingBook.Services;
 using System.Collections.ObjectModel;
 using System.Windows.Input;

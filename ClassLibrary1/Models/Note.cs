@@ -1,14 +1,4 @@
-﻿using CookingBook.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-namespace CookingBook.Models
+﻿namespace ClassLibrary1.Models
 {
     public class Note
     {

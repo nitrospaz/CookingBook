@@ -1,4 +1,4 @@
-﻿using CookingBook.Models;
+﻿using ClassLibrary1.Models;
 
 namespace CookingBook.Services
 {

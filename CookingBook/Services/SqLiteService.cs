@@ -1,4 +1,5 @@
-﻿using CookingBook.Models;
+﻿using ClassLibrary1;
+using ClassLibrary1.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CookingBook.Services

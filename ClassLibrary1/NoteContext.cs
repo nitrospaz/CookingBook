@@ -1,19 +1,28 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ClassLibrary1.Configuration;
+using ClassLibrary1.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace CookingBook.Models
+namespace ClassLibrary1
 {
-    internal class NoteContext : DbContext
+    public class NoteContext : DbContext
     {
         public DbSet<Note> Notes { get; set; }
-        string dbFileName = "note_record.db";
 
+        // Constructor with no argument is required and it is used when adding/removing migrations from class library
         public NoteContext()
         {
         }
 
+        public NoteContext(DbContextOptions<NoteContext> options)
+            : base(options)
+        {
+            //Database.EnsureCreated();
+            //Database.Migrate();
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string dbFilePath = GetDatabasePath();
+            string dbFilePath = DatabaseConfig.DatabasePath;
 
             // if you just provide the name of the file, it will be created in the app's local folder
             // if you provide a path to a file, it will be created in that location
@@ -82,22 +91,33 @@ namespace CookingBook.Models
             this.Database.Migrate();
         }
 
-        private string GetDatabasePath()
-        {
-            // This is the local folder for the current user
-            string localFolderPath = Path.Combine(FileSystem.AppDataDirectory, "WCS_CookingBook");
+        //private string GetDatabasePath()
+        //{
+        //    // can't access FileSystem.AppDataDirectory because FileSystem is not available in the class library
+        //    // it is only available in the Maui program
+        //    //string localFolderPath = Path.Combine(FileSystem.AppDataDirectory, "WCS_CookingBook");
 
-            // This is the current directory where the code is executing from
-            //string localFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Data");
-            bool dirExist = Directory.Exists(localFolderPath);
-            if (!Directory.Exists(localFolderPath))
-            {
-                Directory.CreateDirectory(localFolderPath);
-            }
+        //    // https://learn.microsoft.com/en-us/dotnet/api/system.environment.specialfolder?view=net-9.0
+        //    // LocalApplicationData returns "C:\Users\User\AppData\Local" but actually ends up storing in the
+        //    //      C > User > AppData > Local > Packages > {package.name} > LocalCache > Local 
+        //    // Environment.SpecialFolder.ApplicationData returns "C:\Users\User\AppData\Roaming" but actually ends up storing in the
+        //    //      C > User > AppData > Local > Packages > {package.name} > LocalCache > Roaming
+        //    //string localFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "WCS_CookingBook");
 
-            string dbFilePath = Path.Combine(localFolderPath, dbFileName);
+        //    string localFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "WCS_CookingBook");
 
-            return dbFilePath;
-        }
+
+        //    // This is the current directory where the code is executing from
+        //    //string localFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Data");
+        //    bool dirExist = Directory.Exists(localFolderPath);
+        //    if (!Directory.Exists(localFolderPath))
+        //    {
+        //        Directory.CreateDirectory(localFolderPath);
+        //    }
+
+        //    string dbFilePath = Path.Combine(localFolderPath, dbFileName);
+
+        //    return dbFilePath;
+        //}
     }
 }
