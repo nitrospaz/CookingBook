@@ -51,6 +51,7 @@ namespace CookingBook
 
             if (DeviceInfo.Platform == DevicePlatform.Android)
             {
+                // "/data/user/0/{App.Name}/files/note_record.db3"
                 databasePath = Path.Combine(FileSystem.AppDataDirectory, databaseName);
             }
             else if (DeviceInfo.Platform == DevicePlatform.iOS)
