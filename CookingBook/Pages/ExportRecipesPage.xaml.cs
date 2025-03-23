@@ -1,4 +1,4 @@
-using CookingBook.Models;
+using ClassLibrary1.Models;
 using CookingBook.Services;
 using CookingBook.Utilities;
 using Microsoft.Maui.Storage;
@@ -9,11 +9,13 @@ namespace CookingBook.Pages;
 
 public partial class ExportRecipesPage : ContentPage
 {
+    private readonly ISqLiteService _dataAccess;
     private readonly AlertService _alertService;
 
-    public ExportRecipesPage()
+    public ExportRecipesPage(ISqLiteService sqLiteService)
     {
         InitializeComponent();
+        _dataAccess = sqLiteService;
         _alertService = new AlertService(this);
         SetSaveLocationLabel();
     }
@@ -34,10 +36,10 @@ public partial class ExportRecipesPage : ContentPage
         }
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
-        LoadRecipes();
+        await LoadRecipes();
     }
 
     protected override void OnDisappearing()
@@ -46,9 +48,9 @@ public partial class ExportRecipesPage : ContentPage
         ClearSelections();
     }
 
-    private void LoadRecipes()
+    private async Task LoadRecipes()
     {
-        var recipes = Note.LoadAll();
+        var recipes = await _dataAccess.GetNotesAsync();
         RecipesCollectionView.ItemsSource = recipes.Select(r => new SelectableRecipe { Recipe = r }).ToList();
     }
 

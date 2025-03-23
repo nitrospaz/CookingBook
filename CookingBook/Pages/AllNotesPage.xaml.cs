@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Input;
-using CookingBook.Models;
+using ClassLibrary1.Models;
+using CookingBook.Services;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -7,13 +8,15 @@ namespace CookingBook.Pages;
 
 public partial class AllNotesPage : ContentPage
 {
+    private readonly ISqLiteService _sqLiteService;
     public ObservableCollection<Note> AllNotes { get; private set; }
     public ICommand AddNewRecipeCommand { get; private set; }
 
-    public AllNotesPage()
+    public AllNotesPage(ISqLiteService sqLiteService)
     {
         InitializeComponent();
-        AllNotes = new ObservableCollection<Note>(Note.LoadAll());
+        _sqLiteService = sqLiteService;
+        AllNotes = new ObservableCollection<Note>();
         AddNewRecipeCommand = new RelayCommand(OnAddNewRecipe);
         BindingContext = this; // Set the BindingContext after initializing the collection
     }
@@ -24,10 +27,11 @@ public partial class AllNotesPage : ContentPage
         ReloadNotes();
     }
 
-    private void ReloadNotes()
+    private async void ReloadNotes()
     {
         AllNotes.Clear();
-        foreach (var note in Note.LoadAll())
+        var notes = await _sqLiteService.GetNotesAsync();
+        foreach (var note in notes)
         {
             AllNotes.Add(note);
         }
@@ -42,7 +46,7 @@ public partial class AllNotesPage : ContentPage
 
             // Navigate to NotePage with the selected note's filename as a query parameter
             // load in current frame
-            await Shell.Current.GoToAsync($"NotePage?load={selectedNote.Filename}");
+            await Shell.Current.GoToAsync($"NotePage?load={selectedNote.Id}");
         }
 
         // Deselect the item
