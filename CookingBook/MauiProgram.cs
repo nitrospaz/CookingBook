@@ -27,7 +27,7 @@ namespace CookingBook
 
             // Get the database path
             string dbPath = GetDatabasePath();
-            // set variable that can be read from library
+            // set global variable that can be read from library
             DatabaseConfig.DatabasePath = dbPath;
 
             // Register the ISqLiteService
@@ -51,27 +51,29 @@ namespace CookingBook
 
             if (DeviceInfo.Platform == DevicePlatform.Android)
             {
+                // actual path
                 // "/data/user/0/{App.Name}/files/note_record.db3"
                 databasePath = Path.Combine(FileSystem.AppDataDirectory, databaseName);
             }
             else if (DeviceInfo.Platform == DevicePlatform.iOS)
             {
+                // TODO not tested. May not work, Beware.
                 SQLitePCL.Batteries_V2.Init();
                 databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library", databaseName);
             }
             else if (DeviceInfo.Platform == DevicePlatform.WinUI)
             {
                 // this creates the final path to the database file
-                // "C:\\Users\\User\\AppData\\Local\\Packages\\{App.Name}\\LocalState\\note_record.db3"
+                // "C:\\Users\\{User}\\AppData\\Local\\Packages\\{App.Name}\\LocalState\\note_record.db3"
                 databasePath = Path.Combine(FileSystem.AppDataDirectory, databaseName);
             }
             else
             {
+                // pass along name only and let EFCore framework handle the path
                 databasePath = databaseName;
             }
 
             return databasePath;
-
         }
     }
 }
